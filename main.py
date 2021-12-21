@@ -169,19 +169,21 @@ def create_message(update, context):
             tarih = context.args[-1]
             msg = " ".join(context.args[:-1])[:-1]
             tarih = datetime.strptime(tarih, date_format)
+            if tarih < datetime.now():
+                response = "Date must be bigger than now !"
+            else:
+                response = (f"Mesaj : {msg} \n"
+                            f"Tarih: {tarih}")
 
-            response = (f"Mesaj : {msg} \n"
-                        f"Tarih: {tarih}")
+                job = scheduler.add_job(
+                    send_msg_all,
+                    'date',
+                    kwargs={'text': msg},
+                    run_date=tarih
+                )
 
-            job = scheduler.add_job(
-                send_msg_all,
-                'date',
-                kwargs={'text': msg},
-                run_date=tarih
-            )
-
-            # commit
-            session.commit()
+                # commit
+                session.commit()
 
     except Exception as err:
         response = f"Hata alındı : {err}"
