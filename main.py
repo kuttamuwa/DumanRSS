@@ -5,6 +5,7 @@ Duman ARGE RSS Feeder
 import os.path
 from datetime import datetime
 
+import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from sqlalchemy import create_engine, Column, Integer, String, Sequence
 from sqlalchemy.ext.declarative import declarative_base
@@ -176,7 +177,7 @@ def create_message(update, context):
             tarih = context.args[-1]
             msg = " ".join(context.args[:-1])[:-1]
             tarih = datetime.strptime(tarih, date_format)
-            if tarih < tarih.now():
+            if tarih < tarih.now(tz=pytz.timezone('Turkey')):
                 response = "Date must be bigger than now !"
                 print(response)
             else:
