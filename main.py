@@ -162,6 +162,9 @@ def start_cmd(update, context):
 
 def create_message(update, context):
     try:
+        if len(context.args) < 2:
+            update.message.reply_text(
+                "Please put minimum 2 parameters seperated with comma. One is the message and other is date ")
         tarih = context.args[-1]
         msg = " ".join(context.args[:-1])[:-1]
         tarih = datetime.strptime(tarih, date_format)
