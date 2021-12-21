@@ -163,8 +163,7 @@ def start_cmd(update, context):
 def create_message(update, context):
     try:
         if len(context.args) < 2:
-            update.message.reply_text(
-                "Please put minimum 2 parameters seperated with comma. One is the message and other is date ")
+            response = "Please put minimum 2 parameters seperated with comma. One is the message and other is date "
 
         else:
             tarih = context.args[-1]
@@ -186,7 +185,6 @@ def create_message(update, context):
 
     except Exception as err:
         response = f"Hata alındı : {err}"
-
     update.message.reply_text(response)
 
 
