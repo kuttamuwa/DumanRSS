@@ -90,6 +90,8 @@ def create_environment():
     create_user(chat_id=settings.default_chat_id, username=settings.default_username)
     print("Default chat id inserted !")
 
+    print("ENVIRON IS OK")
+
 
 # bot functions
 def help_cmd(update, context):
@@ -129,6 +131,8 @@ def get_messages(update, context):
     else:
         update.message.reply_text('There is no pending message ')
 
+    print("Listed tasks")
+
 
 def send_msg_all(text):
     print("SENDING TO EVERYONE ! ")
@@ -145,6 +149,7 @@ def send_cmd(update, context):
         send_msg_all(msg)
     except Exception as err:
         update.message.reply_text(f"Error raised while sending messages : {err}")
+    print(f"Sent msg : {msg}")
 
 
 def start_cmd(update, context):
@@ -158,23 +163,26 @@ def start_cmd(update, context):
         username=user,
         chat_id=chat_id
     )
+    print("Started and created/updated user")
 
 
 def create_message(update, context):
+    print("Creating messsage..")
     try:
         if len(context.args) < 2:
             response = "Please put minimum 2 parameters seperated with comma. One is the message and other is date "
-
+            print(response)
         else:
             tarih = context.args[-1]
             msg = " ".join(context.args[:-1])[:-1]
             tarih = datetime.strptime(tarih, date_format)
             if tarih < datetime.now():
                 response = "Date must be bigger than now !"
+                print(response)
             else:
                 response = (f"Mesaj : {msg} \n"
                             f"Tarih: {tarih}")
-
+                print(response)
                 job = scheduler.add_job(
                     send_msg_all,
                     'date',
@@ -187,6 +195,7 @@ def create_message(update, context):
 
     except Exception as err:
         response = f"Hata alındı : {err}"
+        print(response)
     update.message.reply_text(response)
 
 
@@ -195,9 +204,11 @@ def drop_tasks(update, context):
         job_id = context.args[-1]
         scheduler.remove_job(job_id)
         res = f"{job_id} is dropped !"
+        print(res)
     else:
         scheduler.remove_all_jobs()
         res = "All tasks are dropped !"
+        print(res)
 
     update.message.reply_text(res)
 
