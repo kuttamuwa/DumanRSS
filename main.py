@@ -176,10 +176,11 @@ def create_message(update, context):
             tarih = context.args[-1]
             msg = " ".join(context.args[:-1])[:-1]
             tarih = datetime.strptime(tarih, date_format)
-            if tarih < datetime.now():
+            if tarih < tarih.now():
                 response = "Date must be bigger than now !"
                 print(response)
             else:
+                print(f"Tarih : {tarih} - Now : {tarih.now()}")
                 response = (f"Mesaj : {msg} \n"
                             f"Tarih: {tarih}")
                 print(response)
