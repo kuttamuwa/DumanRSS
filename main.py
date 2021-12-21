@@ -165,22 +165,24 @@ def create_message(update, context):
         if len(context.args) < 2:
             update.message.reply_text(
                 "Please put minimum 2 parameters seperated with comma. One is the message and other is date ")
-        tarih = context.args[-1]
-        msg = " ".join(context.args[:-1])[:-1]
-        tarih = datetime.strptime(tarih, date_format)
 
-        response = (f"Mesaj : {msg} \n"
-                    f"Tarih: {tarih}")
+        else:
+            tarih = context.args[-1]
+            msg = " ".join(context.args[:-1])[:-1]
+            tarih = datetime.strptime(tarih, date_format)
 
-        job = scheduler.add_job(
-            send_msg_all,
-            'date',
-            kwargs={'text': msg},
-            run_date=tarih
-        )
+            response = (f"Mesaj : {msg} \n"
+                        f"Tarih: {tarih}")
 
-        # commit
-        session.commit()
+            job = scheduler.add_job(
+                send_msg_all,
+                'date',
+                kwargs={'text': msg},
+                run_date=tarih
+            )
+
+            # commit
+            session.commit()
 
     except Exception as err:
         response = f"Hata alındı : {err}"
