@@ -127,7 +127,7 @@ def get_messages(update, context):
             [f"Message : {i.kwargs['text']} - Run time : {i.next_run_time} \n Job id : {i.id}" for i in messages])
         update.message.reply_text(messages)
     else:
-        update.message.reply_text('There is no message ')
+        update.message.reply_text('There is no pending message ')
 
 
 def send_msg_all(text):
