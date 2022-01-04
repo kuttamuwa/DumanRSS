@@ -209,7 +209,7 @@ def create_message(update, context):
             now = datetime.now(tz=pytz.timezone('Turkey'))
 
             if tarih.timestamp() < now.timestamp():
-                raise ValueError("Date must be bigger than now !")
+                raise ValueError("Date must be after than now !")
 
             else:
                 print(f"Tarih : {tarih} - Now : {tarih.now()}")
