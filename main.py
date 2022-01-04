@@ -249,6 +249,7 @@ def drop_tasks(update, context):
         print(res)
     else:
         scheduler.remove_all_jobs()
+        session.query(Task).delete()
         res = "All tasks are dropped !"
         print(res)
 
