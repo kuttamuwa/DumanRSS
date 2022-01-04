@@ -211,7 +211,7 @@ def create_message(update, context):
             print(f"now : {now} \n"
                   f"tarih : {tarih}")
 
-            if tarih.timestamp() < now.timestamp():
+            if now.timestamp() > tarih.timestamp():
                 raise ValueError("Date must be after than now !")
 
             else:
