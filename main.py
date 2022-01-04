@@ -215,8 +215,7 @@ def create_message(update, context):
                 raise ValueError("Date must be after than now !")
 
             else:
-                print(f"Tarih : {tarih} - Now : {tarih.now()}")
-                response = (f"Mesaj : {msg} \n"
+                response = (f"Created message. Mesaj : {msg} \n"
                             f"Tarih: {tarih}")
                 print(response)
                 job = scheduler.add_job(
