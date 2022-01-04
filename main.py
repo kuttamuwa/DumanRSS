@@ -7,7 +7,7 @@ from datetime import datetime
 
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
-from sqlalchemy import create_engine, Column, Integer, String, Sequence
+from sqlalchemy import create_engine, Column, Integer, String, Sequence, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 from telegram import Bot
@@ -68,6 +68,15 @@ class TelegramActive(Base):
     username = Column(String, unique=True)
 
 
+class Task(Base):
+    __tablename__ = 'tasks'
+
+    id = Column(Integer, Sequence('id_seq'), primary_key=True)
+    job_id = Column(String)
+    run_date = Column(DateTime)
+    msg = Column(String)
+
+
 # environment functions
 def create_user(chat_id, username):
     q = session.query(TelegramActive).filter(TelegramActive.chat_id == chat_id)
@@ -82,6 +91,23 @@ def create_user(chat_id, username):
     session.commit()
 
 
+def search_and_add_tasks():
+    tasks = session.query(Task)
+
+    if tasks:
+        for task in tasks:
+            if not scheduler.get_job(job_id=task.job_id):
+                msg = task.msg
+                tarih = task.run_date
+                scheduler.add_job(
+                    send_msg_all,
+                    'date',
+                    kwargs={'text': msg},
+                    run_date=tarih,
+                    id=task.job_id
+                )
+
+
 def create_environment():
     # creation
     Base.metadata.create_all(db)
@@ -90,6 +116,9 @@ def create_environment():
     # add default user
     create_user(chat_id=settings.default_chat_id, username=settings.default_username)
     print("Default chat id inserted !")
+
+    # search table and add jobs
+    search_and_add_tasks()
 
     print("ENVIRON IS OK")
 
@@ -177,9 +206,11 @@ def create_message(update, context):
             tarih = context.args[-1]
             msg = " ".join(context.args[:-1])[:-1]
             tarih = datetime.strptime(tarih, date_format)
-            if tarih < tarih.now(tz=pytz.timezone('Turkey')):
-                response = "Date must be bigger than now !"
-                print(response)
+            now = datetime.now(tz=pytz.timezone('Turkey'))
+
+            if tarih.timestamp() < now.timestamp():
+                raise ValueError("Date must be bigger than now !")
+
             else:
                 print(f"Tarih : {tarih} - Now : {tarih.now()}")
                 response = (f"Mesaj : {msg} \n"
@@ -192,6 +223,12 @@ def create_message(update, context):
                     run_date=tarih
                 )
 
+                t = Task(
+                    run_date=tarih,
+                    msg=msg,
+                    job_id=job.id
+                )
+                session.add(t)
                 # commit
                 session.commit()
 
