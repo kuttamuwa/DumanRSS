@@ -20,7 +20,8 @@ global bot
 date_example = "22052022-16:00"
 date_format = "%d%m%Y-%H:%M"
 
-db = create_engine(f"sqlite:///{os.path.join(os.path.abspath('.'), 'app.db')}", echo=True)
+db = create_engine(f"sqlite:///{os.path.join(os.path.abspath('.'), 'app.db')}", echo=True,
+                   connect_args={'check_same_thread': False})
 session = Session(bind=db)
 
 Base = declarative_base()
