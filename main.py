@@ -208,6 +208,8 @@ def create_message(update, context):
             msg = " ".join(context.args[:-1])[:-1]
             tarih = datetime.strptime(tarih, date_format)
             now = datetime.now(tz=pytz.timezone('Turkey'))
+            print(f"now : {now} \n"
+                  f"tarih : {tarih}")
 
             if tarih.timestamp() < now.timestamp():
                 raise ValueError("Date must be after than now !")
